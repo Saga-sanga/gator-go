@@ -12,6 +12,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	fmt.Printf("Read config: %+v\n", conf)
 
 	err = conf.SetUser("sanga")
 	if err != nil {
@@ -19,5 +20,8 @@ func main() {
 	}
 
 	conf, err = config.Read()
-	fmt.Printf("Config: %v", conf)
+	if err != nil {
+		log.Fatalf("error reading config: %v", err)
+	}
+	fmt.Printf("Read config again: %+v", conf)
 }

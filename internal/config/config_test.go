@@ -8,7 +8,8 @@ func TestRead(t *testing.T) {
 		t.Errorf("Failed to read file: %q", err)
 	}
 	want := Config{
-		DBURL: "postgres://example",
+		DBURL:           "postgres://example",
+		CurrentUserName: "sanga",
 	}
 
 	if got != want {

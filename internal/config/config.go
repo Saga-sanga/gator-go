@@ -20,13 +20,14 @@ func Read() (Config, error) {
 		return Config{}, err
 	}
 
-	dat, err := os.ReadFile(path)
+	file, err := os.Open(path)
 	if err != nil {
 		return Config{}, fmt.Errorf("Error reading file: %s", err)
 	}
 
+	decoder := json.NewDecoder(file)
 	var config Config
-	if err := json.Unmarshal(dat, &config); err != nil {
+	if err := decoder.Decode(&config); err != nil {
 		return Config{}, fmt.Errorf("Error unmarshalling JSON: %v", err)
 	}
 
@@ -44,19 +45,20 @@ func getConfigFilePath() (string, error) {
 }
 
 func write(cfg Config) error {
-	jsonData, err := json.Marshal(cfg)
-	if err != nil {
-		return fmt.Errorf("Error marshalling json: %v", err)
-	}
-
 	path, err := getConfigFilePath()
 	if err != nil {
 		return err
 	}
 
-	err = os.WriteFile(path, jsonData, 0644)
+	file, err := os.Create(path)
 	if err != nil {
-		return fmt.Errorf("Error writing to file: %v", err)
+		return err
+	}
+	defer file.Close()
+
+	encoder := json.NewEncoder(file)
+	if err = encoder.Encode(cfg); err != nil {
+		return err
 	}
 
 	return nil
