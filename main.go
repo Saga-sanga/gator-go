@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 
 	"github.com/saga-sanga/gator-go/internal/config"
@@ -12,5 +11,10 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Printf("Read config: %+v\n", conf)
+
+	gatorState := state{
+		config: &conf,
+	}
+
+	startGator(&gatorState)
 }
