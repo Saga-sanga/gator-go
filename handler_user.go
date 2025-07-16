@@ -9,6 +9,28 @@ import (
 	"github.com/saga-sanga/gator-go/internal/database"
 )
 
+func handlerUsers(s *state, cmd command) error {
+	if len(cmd.Arguments) != 0 {
+		return fmt.Errorf("usage: %s", cmd.Name)
+	}
+	currentUser := s.cfg.CurrentUserName
+
+	users, err := s.db.GetUsers(context.Background())
+	if err != nil {
+		return err
+	}
+
+	for _, user := range users {
+		if user.Name == currentUser {
+			fmt.Printf("* %s (current)\n", user.Name)
+		} else {
+			fmt.Printf("* %s\n", user.Name)
+		}
+	}
+
+	return nil
+}
+
 func handlerReset(s *state, cmd command) error {
 	if len(cmd.Arguments) != 0 {
 		return fmt.Errorf("usage: %s", cmd.Name)
