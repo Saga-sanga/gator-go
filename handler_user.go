@@ -13,21 +13,19 @@ func handlerUsers(s *state, cmd command) error {
 	if len(cmd.Arguments) != 0 {
 		return fmt.Errorf("usage: %s", cmd.Name)
 	}
-	currentUser := s.cfg.CurrentUserName
 
 	users, err := s.db.GetUsers(context.Background())
 	if err != nil {
-		return err
+		return fmt.Errorf("couldn't list users: %w", err)
 	}
 
 	for _, user := range users {
-		if user.Name == currentUser {
-			fmt.Printf("* %s (current)\n", user.Name)
-		} else {
-			fmt.Printf("* %s\n", user.Name)
+		if user.Name == s.cfg.CurrentUserName {
+			fmt.Printf("* %v (current)\n", user.Name)
+			continue
 		}
+		fmt.Printf("* %v\n", user.Name)
 	}
-
 	return nil
 }
 
