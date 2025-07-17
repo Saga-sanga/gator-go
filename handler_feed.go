@@ -9,6 +9,22 @@ import (
 	"github.com/saga-sanga/gator-go/internal/database"
 )
 
+func handlerListFees(s *state, cmd command) error {
+	ctx := context.Background()
+	feedList, err := s.db.GetFeeds(ctx)
+	if err != nil {
+		return fmt.Errorf("failed to fetch feed: %w", err)
+	}
+
+	for _, feed := range feedList {
+		fmt.Printf("* Name:        %s\n", feed.Name)
+		fmt.Printf("* URL:         %s\n", feed.Url)
+		fmt.Printf("* Username:    %s\n", feed.UserName)
+	}
+
+	return nil
+}
+
 func handlerAddFeed(s *state, cmd command) error {
 	ctx := context.Background()
 	user, err := s.db.GetUser(ctx, s.cfg.CurrentUserName)
