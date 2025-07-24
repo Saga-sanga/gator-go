@@ -9,6 +9,30 @@ import (
 	"github.com/saga-sanga/gator-go/internal/database"
 )
 
+func handlerUnfollow(s *state, cmd command, user database.User) error {
+	ctx := context.Background()
+	if len(cmd.Arguments) != 1 {
+		return fmt.Errorf("usage: %s <url>", cmd.Name)
+	}
+	url := cmd.Arguments[0]
+
+	feed, err := s.db.GetFeedByUrl(ctx, url)
+	if err != nil {
+		return fmt.Errorf("error retrieving feed: %w", err)
+	}
+
+	_, err = s.db.DeleteFeedFollow(ctx, database.DeleteFeedFollowParams{
+		UserID: user.ID,
+		FeedID: feed.ID,
+	})
+	if err != nil {
+		return fmt.Errorf("cannot unfollow feed: %w", err)
+	}
+
+	fmt.Println("Feed follow deleted:")
+	return nil
+}
+
 func handlerFollow(s *state, cmd command, user database.User) error {
 	ctx := context.Background()
 	if len(cmd.Arguments) != 1 {
