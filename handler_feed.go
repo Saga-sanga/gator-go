@@ -34,13 +34,8 @@ func handlerListFeed(s *state, cmd command) error {
 	return nil
 }
 
-func handlerAddFeed(s *state, cmd command) error {
+func handlerAddFeed(s *state, cmd command, user database.User) error {
 	ctx := context.Background()
-	user, err := s.db.GetUser(ctx, s.cfg.CurrentUserName)
-	if err != nil {
-		return fmt.Errorf("cannot retrieve current user: %w", err)
-	}
-
 	if len(cmd.Arguments) != 2 {
 		return fmt.Errorf("usage: %s <name> <url>", cmd.Name)
 	}
